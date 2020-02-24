@@ -17,7 +17,7 @@ const Chat = ({ location }) => {
   const [users, setUsers] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const ENDPOINT = 'https://project-chat-application.herokuapp.com/';
+  const ENDPOINT = 'http://localhost:4000';
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -28,6 +28,7 @@ const Chat = ({ location }) => {
     setName(name)
 
     socket.emit('join', { name, room }, (error) => {
+      console.log('tam err', error)
       if(error) {
         alert(error);
       }

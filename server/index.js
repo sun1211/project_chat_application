@@ -15,10 +15,13 @@ app.use(cors());
 app.use(router);
 
 io.on('connect', (socket) => {
-  socket.on('join', ({ name, room }, callback) => {
+  socket.on('join', ({ name, room }, handleError) => {
     const { error, user } = addUser({ id: socket.id, name, room });
 
-    if(error) return callback(error);
+    console.log('tam ', (error),name, room)
+    console.log('tam ', handleError(error))
+
+    if(error) return handleError(error);
 
     socket.join(user.room);
 
@@ -27,15 +30,15 @@ io.on('connect', (socket) => {
 
     io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
 
-    callback();
+    handleError();
   });
 
-  socket.on('sendMessage', (message, callback) => {
+  socket.on('sendMessage', (message, handleError) => {
     const user = getUser(socket.id);
 
     io.to(user.room).emit('message', { user: user.name, text: message });
 
-    callback();
+    handleError();
   });
 
   socket.on('disconnect', () => {
@@ -48,4 +51,4 @@ io.on('connect', (socket) => {
   })
 });
 
-server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
+server.listen(process.env.PORT || 4000, () => console.log(`Server has started.`));
